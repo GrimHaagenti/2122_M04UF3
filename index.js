@@ -8,34 +8,31 @@ let fs = require("fs");
 let http_server = http.createServer(function(req, res) {
  	
 
-	if (req.url == "/character.png")
-	{
 
-	fs.readFile("character.png" , function(err,data)
+	if (req.url == undefined){
+
+	fs.readFile("index.html", function(err, data){
+		if (err)
+		{console.log("ERROR!!");
+		return;}
+	
+
+	}
+	
+
+}else{
+	let split_input;
+
+	split_input = req.url.split("/");
+
+	
+	fs.readFile( split_input[2]+".png" , function(err,data)
 		{
 		res.writeHead(200);		
 		res.end(data);
 		})
-	}
-
-	else{  
-
-
-	fs.readFile("index.html", function(err, data)
-		{
-		if (err)
-			{
-			console.log("ERROR!!");
-			return;
-			}
-
-	 	res.writeHead(200);
-	
-		res.end(data);
-
 	})
-
 	
 	
-	}}).listen(3000);
+	}).listen(3000);
 		 

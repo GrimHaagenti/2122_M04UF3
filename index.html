@@ -40,12 +40,21 @@ let game = new Phaser.Game(config);
 
 function preload(){
 	this.load.image('player', '/character.png');
-
-
-}
+	this.load.image('ambulance', '/ambulance.png');
+	this.load.image('bus', '/bus.png');	
+	this.load.image('formula', '/formula.png');
+	this.load.image('green', '/green.png');
+	this.load.image('bg', '/bg.png');
+	}
 
 function create(){
+	
+	image = this.add.image(400,300, "bg");
 	image = this.add.image(192, 256, 'player');
+	image = this.add.image(10,135, "ambulance");
+	image = this.add.image(10,90, "bus");
+	image = this.add.image(10,255, "formula");
+	image = this.add.image(10,220, "green");
 
 }
 function update(){}
