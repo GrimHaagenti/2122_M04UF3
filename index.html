@@ -18,6 +18,25 @@
 let screen_w = 800;
 let screen_h = 600;
 
+let offset = 5;
+
+let car1_x = screen_w+ offset ; 
+let car2_x = screen_w + offset;
+let car3_x = -offset;
+let car4_x = -offset;
+
+let lane1_1 = 85 ;
+let lane1_2 = 130;
+let lane2_1 = 215;
+let lane2_2 = 250;
+let lane3_1 = 335;
+let lane3_2 = 370;
+
+
+
+
+
+
 
 let config = {
 	width: screen_w,
@@ -49,15 +68,59 @@ function preload(){
 
 function create(){
 	
-	image = this.add.image(400,300, "bg");
-	image = this.add.image(192, 256, 'player');
-	image = this.add.image(10,135, "ambulance");
-	image = this.add.image(10,90, "bus");
-	image = this.add.image(10,255, "formula");
-	image = this.add.image(10,220, "green");
+	bg = this.add.image(400,300, "bg");
+	robo = this.add.image(192, 256, 'player');
+	ambu = this.add.image(car2_x, lane1_2, "ambulance");
+	ambu.setScale(1.5);
+
+	bus = this.add.image(car1_x,lane1_1,"bus");
+	bus.setScale(1.5);
+
+	formula = this.add.image(car4_x,lane2_2, "formula");
+	formula.setScale(1.5);
+
+	green_car = this.add.image(car3_x,lane2_1, "green");
+	green_car.setScale(1.5);
+	
+	
+
+	bus.flipX = true;
+	ambu.flipX = true;
 
 }
-function update(){}
+function update(){
+
+ambu.x -= 1; 
+bus.x -=1 ;
+formula.x += 1;
+green_car.x += 1;
+
+
+flip_cars(ambu);
+flip_cars(bus);
+flip_cars(formula);
+flip_cars(green_car);
+
+
+
+
+
+}
+
+function flip_cars(car){
+
+if (car.x <= -offset*2) {
+
+
+
+car.x = screen_w+ offset*2;
+}else if(car.x > screen_w + offset){
+car.x = -offset *2;
+
+}
+
+
+}
 
 </script>	
 
