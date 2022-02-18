@@ -34,19 +34,9 @@ let lane3_2 = 370;
 
 
 let velocity = 4;
-let p_vel = 3;
+
 
 let cursors;
-
-
-let lives = 3;
-let score = 0;
-let lives_txt;
-let score_txt;
-
-let crossing = false;
-
-
 
 
 let config = {
@@ -68,26 +58,6 @@ let config = {
 
 let game = new Phaser.Game(config);
 
-function reset(){
-
-	ambu.x = car2_x;
-	ambu.y = lane1_2;
-
-	bus.x = car1_x;
-	bus.y = lane1_1;
-
-	formula.x = car4_x;
-	formula.y = lane2_2;
-
-	green_car.x = car3_x;
-	green_car.y = lane2_1;
-
-	robo.x = screen_w/2
-	robo.y = 9*(screen_h/10);
-
-	crossing = false;
-}
-
 function preload(){
 	this.load.image('player', '/character.png');
 	this.load.image('ambulance', '/ambulance.png');
@@ -97,6 +67,7 @@ function preload(){
 	this.load.image('bg', '/bg.png');
 	
 	cursors = this.input.keyboard.createCursorKeys();
+
 	}
 
 function create(){
@@ -104,66 +75,46 @@ function create(){
 	bg = this.add.image(400,300, "bg");
 	robo = this.add.image(screen_w/2, 9*(screen_h/10), 'player');
 	robo.setScale(0.4);
-	this.physics.add.existing(robo, false);
-	
+
 	ambu = this.add.image(car2_x, lane1_2, "ambulance");
 	ambu.setScale(1.5);
-	this.physics.add.existing(ambu, false);
 
 	bus = this.add.image(car1_x,lane1_1,"bus");
 	bus.setScale(1.5);
-	this.physics.add.existing(bus, false);
-	
 
 	formula = this.add.image(car4_x,lane2_2, "formula");
 	formula.setScale(1.5);
-	this.physics.add.existing(formula, false);
-	
 
 	green_car = this.add.image(car3_x,lane2_1, "green");
 	green_car.setScale(1.5);
-	this.physics.add.existing(green_car, false);
+	
 	
 
 	bus.flipX = true;
 	ambu.flipX = true;
 
 	let cars_col = [ambu, bus, formula, green_car];
-		
-	for ( let i = 0; i < cars_col.length ; i++){
 	
+	for ( let i = 0; i < cars_col.length; i++){
 	this.physics.add.collider(robo, cars_col[i], function(player, car){
-	reset();
-	lives--;
-	lives_txt.text = lives.toString();
-	
+	console.log(car);});
+	}
 
-	})
-	};
-
-
-	this.add.text(screen_w/2, 64, "VIDAS: ");
-	lives_txt = this.add.text(screen_w/2 + 64, 64, "3");
-
-
-
-	this.add.text(screen_w/2 + 128, 64, "PUNTOS: ");
-	score_txt = this.add.text ( screen_w/2 + 196, 64, "0");
 
 }
 function update(){
 
 if (cursors.up.isDown){
-	robo.y -= p_vel;
+	robo.y -= 3;
 }
 if (cursors.down.isDown){
-	robo.y += p_vel;
+	robo.y += 3;
 }if (cursors.right.isDown){
-	robo.x += p_vel;
+	robo.x +=3;
 }if (cursors.left.isDown){
-	robo.x -= p_vel;
+	robo.x -=3;
 	}
-	
+
 ambu.x -= velocity; 
 bus.x -=velocity ;
 formula.x += velocity ;
@@ -187,16 +138,7 @@ flip_cars(formula);
 flip_cars(green_car);
 
 
-if (robo.y <= screen_h/10){
-crossing = true;
 
-}else if (robo.y >= 8*(screen_h/10){
-
-crossing = false;
-score += 100;
-score_txt.text = score.toString();
-
-}
 
 
 }
