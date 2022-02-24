@@ -25,19 +25,28 @@ let car2_x = screen_w + offset;
 let car3_x = -offset;
 let car4_x = -offset;
 
-let lane1_1 = 85 ;
+let lane1_1 = 85;
 let lane1_2 = 130;
 let lane2_1 = 215;
 let lane2_2 = 250;
 let lane3_1 = 335;
-let lane3_2 = 370;
+let lane3_2 = 380;
 
 
-let velocity = 4;
+let lane_offset1 = lane1_2 - lane1_1;
+let lane_offset2 = lane2_1 - lane1_1;
+
+let formula_vel = 6;
+let bus_vel = 2;
+let green_vel = 3;
+let ambula_vel = 4;
+let extra_vel=0;
+
+
 let p_vel = 3;
 
 let cursors;
-
+let keycode_r;
 
 let lives = 3;
 let score = 0;
@@ -45,7 +54,7 @@ let lives_txt;
 let score_txt;
 
 let crossing = false;
-
+let m_gameOver = false;
 
 
 
@@ -71,16 +80,22 @@ let game = new Phaser.Game(config);
 function reset(){
 
 	ambu.x = car2_x;
-	ambu.y = lane1_2;
-
+	
 	bus.x = car1_x;
-	bus.y = lane1_1;
-
+	
 	formula.x = car4_x;
-	formula.y = lane2_2;
-
+	
 	green_car.x = car3_x;
-	green_car.y = lane2_1;
+	ambu2.x = car2_x;
+	
+	bus2.x = car1_x;
+	
+	formula2.x = car4_x;
+	
+	green_car2.x = car3_x;
+	 
+
+	let k_board;
 
 	robo.x = screen_w/2
 	robo.y = 9*(screen_h/10);
@@ -95,16 +110,24 @@ function preload(){
 	this.load.image('formula', '/formula.png');
 	this.load.image('green', '/green.png');
 	this.load.image('bg', '/bg.png');
-	
-	cursors = this.input.keyboard.createCursorKeys();
+	k_board = this.input.keyboard;
+	cursors = k_board.createCursorKeys();
+	keycode_r = k_board.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+	console.log(keycode_r);
+
+
+
 	}
 
 function create(){
+
 	
+
 	bg = this.add.image(400,300, "bg");
 	robo = this.add.image(screen_w/2, 9*(screen_h/10), 'player');
-	robo.setScale(0.4);
+	robo.setScale(0.3);
 	this.physics.add.existing(robo, false);
+	
 	
 	ambu = this.add.image(car2_x, lane1_2, "ambulance");
 	ambu.setScale(1.5);
@@ -124,81 +147,152 @@ function create(){
 	green_car.setScale(1.5);
 	this.physics.add.existing(green_car, false);
 	
+	ambu2 = this.add.image(car2_x, lane3_2, "ambulance");
+	ambu2.setScale(1.5);
+	this.physics.add.existing(ambu2, false);
+
+	bus2 = this.add.image(car1_x,lane3_1,"bus");
+	bus2.setScale(1.5);
+	this.physics.add.existing(bus2, false);
+	
+
+	formula2 = this.add.image(car4_x,lane3_2
+	+ (3*lane_offset1) , "formula");
+	formula2.setScale(1.5);
+	this.physics.add.existing(formula2, false);
+	
+
+	green_car2 = this.add.image(car3_x,lane3_1 + lane_offset2, "green");
+	green_car2.setScale(1.5);
+	this.physics.add.existing(green_car2, false);
+	
+
+
 
 	bus.flipX = true;
 	ambu.flipX = true;
+	bus2.flipX = true;
+	ambu2.flipX = true;
 
-	let cars_col = [ambu, bus, formula, green_car];
+
+
+	let cars_col = [ambu, bus, formula, green_car, ambu2, bus2, formula2, green_car2];
 		
 	for ( let i = 0; i < cars_col.length ; i++){
 	
 	this.physics.add.collider(robo, cars_col[i], function(player, car){
+	if(lives > 0 ){
 	reset();
 	lives--;
 	lives_txt.text = lives.toString();
+	}
+	else{ 
+	m_gameOver = true;
+	gameOver();
 	
-
+	
+	}
 	})
+
+
+
 	};
 
-
-	this.add.text(screen_w/2, 64, "VIDAS: ");
-	lives_txt = this.add.text(screen_w/2 + 64, 64, "3");
+	gameover_txt = this.add.text(screen_w/5, screen_h/3,"GAME OVER").setFontSize(0);
 
 
+	this.add.text(2*(screen_w/3), 32, "VIDAS: ");
+	lives_txt = this.add.text(2*(screen_w/3) + 64, 32, "3");
 
-	this.add.text(screen_w/2 + 128, 64, "PUNTOS: ");
-	score_txt = this.add.text ( screen_w/2 + 196, 64, "0");
+
+
+	this.add.text(2*(screen_w/3) + 128,32, "PUNTOS: ");
+	score_txt = this.add.text ( 2*(screen_w/3) + 196, 32, "0");
+
+}
+
+function gameOver(){
+gameover_txt.setFontSize(100);
+
+robo.visible = false;
+
+
+
 
 }
 function update(){
 
-if (cursors.up.isDown){
-	robo.y -= p_vel;
+if (keycode_r.isDown){
+lives = 3;
+lives_txt = lives.toString();
+robo.visible = true;
+gameover_txt.setFontSize(0);
+m_gameOver = false
+reset();
 }
-if (cursors.down.isDown){
-	robo.y += p_vel;
-}if (cursors.right.isDown){
-	robo.x += p_vel;
-}if (cursors.left.isDown){
-	robo.x -= p_vel;
-	}
-	
-ambu.x -= velocity; 
-bus.x -=velocity ;
-formula.x += velocity ;
-green_car.x += velocity;
+ambu.x -= ambula_vel+extra_vel; 
+bus.x -= bus_vel +extra_vel;
+formula.x += formula_vel +extra_vel;
+green_car.x += green_vel+ extra_vel;
+ambu2.x -= ambula_vel+ extra_vel; 
+bus2.x -= bus_vel +extra_vel;
+formula2.x += formula_vel +extra_vel;
+green_car2.x += green_vel+ extra_vel;
+
 
 
 if (ambu.x <= -offset*2){
 
 ambu.x = screen_w + offset*2;
+ambu2.x = screen_w + offset*2;
+
 
 }
 
 if (bus.x <= -offset*2){
 
 bus.x = screen_w + offset*2;
-
+bus2.x = screen_w + offset*2;
 }
 
 
 flip_cars(formula);
 flip_cars(green_car);
+flip_cars(formula2);
+flip_cars(green_car2);
+
 
 
 if (robo.y <= screen_h/10){
 crossing = true;
 
-}else if (robo.y >= 8*(screen_h/10){
-
-crossing = false;
-score += 100;
-score_txt.text = score.toString();
-
 }
 
+if (robo.y >= 8*(screen_h/10) && crossing == true){
 
+
+score += 100;
+score_txt.text = score.toString();
+crossing = false;
+extra_vel += 0.2;
+}
+if (m_gameOver == true){return;}
+if (cursors.up.isDown){
+	robo.y -= p_vel;
+}
+
+if (cursors.down.isDown){
+	robo.y += p_vel;
+}
+
+if (cursors.right.isDown){
+	robo.x += p_vel;
+}
+
+if (cursors.left.isDown){
+	robo.x -= p_vel;
+	}
+	
 }
 
 function flip_cars(car){
